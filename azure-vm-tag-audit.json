@@ -29,7 +29,7 @@
             }
         },
         "policyRule": {
-            "if": { //모든 조건이 True일 경우 effect 효과를 수행함
+            "if": {
             "allOf": [
                 {
                             "field": "type",
