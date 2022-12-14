@@ -1,0 +1,57 @@
+{
+    "$schema": "https://schema.management.azure.com/schemas/2018-05-01/subscriptionDeploymentTemplate.json#",
+    "contentVersion": "1.0.0.0",
+    "variables": {
+        "policyName": "enforce-naming-for-resource-groups-pd",
+        "policyDisplayName": "Enforce naming convention for resource groups",
+        "policyDescription": "This policy enforces a naming pattern for resource groups. ex)RG-jhkim-daesangvpntest-0922"
+    },
+    "parameters": {
+        "allowedRGNames": {
+        "type": "String",
+        "allowedValues": [
+        "GoldApplicationDevelopment",
+        "GoldCloudProductivity",
+        "GoldSecurity",
+        "jhkim"
+        ]
+        }
+    },
+    "resources": [
+        {
+            "type": "Microsoft.Authorization/policyDefinitions",
+            "name": "[variables('policyName')]",
+    //        "location": "Korea Central",
+            "apiVersion": "2019-09-01",
+            "properties": {
+                "displayName": "[variables('policyDisplayName')]",
+                "policyType": "Custom",
+                "description": "[variables('policyDescription')]",
+                "metadata": {
+                    "category": "Naming convention"
+                },
+                "mode": "All",
+                "policyRule": {
+                    "if": {
+                        "allOf": [
+                            {
+                                "field": "type",
+                                "equals": "Microsoft.Resources/subscriptions/resourceGroups"
+                            },
+                            {
+                                "not":{
+                                    "field": "name",
+                                    "match": "[concat('RG-', parameters('allowedRGNames'), '-', '????', '-','####')]"
+                                }
+                                
+                            }
+                        ]
+                    },
+                    "then": {
+                        "effect": "deny"
+                    }
+                }
+            }
+        }
+    ]
+}
